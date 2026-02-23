@@ -22,7 +22,8 @@ export function validateAndNormalizePlayerUrl(playerUrl: string): string {
         throw new Error(`Invalid player URL: ${playerUrl}`);
     }
 }
-export function extractPlayerId(playerUrl: string): string {
+export function extractPlayerId(playerUrl?: string): string {
+    if (!playerUrl) return 'unknown';
     try {
         const url = new URL(playerUrl);
         const pathParts = url.pathname.split('/');

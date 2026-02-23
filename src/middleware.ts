@@ -7,7 +7,7 @@ type Next = (ctx: RequestContext) => Promise<Response>;
 export function withMetrics(handler: Next): Next {
     return async (ctx: RequestContext) => {
         const { pathname } = new URL(ctx.req.url);
-        const playerId = extractPlayerId(ctx.body.player_url);
+        const playerId = extractPlayerId((ctx.body as any)?.player_url);
         const pluginVersion = ctx.req.headers.get("Plugin-Version") ?? "unknown";
         const userAgent = ctx.req.headers.get("User-Agent") ?? "unknown";
 
