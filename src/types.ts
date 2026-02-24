@@ -37,13 +37,15 @@ export interface ResolveUrlResponse {
 }
 
 export interface PoTokenRequest {
-    content_binding?: string;
+    visitorData?: string;
+    videoId?: string;
 }
 
 export interface PoTokenResponse {
-    poToken: string;
+    visitorDataToken: string;
     visitorData: string;
-    expiresAt?: string;
+    videoIdToken?: string;
+    expiresAt: string;
 }
 
 export interface WorkerWithStatus extends Worker {

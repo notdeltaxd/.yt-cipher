@@ -13,8 +13,9 @@ import { JSDOM } from "npm:jsdom";
 import { Innertube, type Context as InnertubeContext } from "npm:youtubei.js";
 
 interface YoutubeSessionData {
-    poToken: string;
-    contentBinding: string;
+    visitorDataToken: string;
+    visitorData: string;
+    videoIdToken?: string;
     expiresAt: Date;
 }
 
@@ -210,16 +211,16 @@ export class PoTokenManager {
         };
     }
 
-    async generatePoToken(contentBinding?: string): Promise<YoutubeSessionData> {
-        if (!contentBinding) {
-            contentBinding = (await this.generateVisitorData()) || undefined;
-            if (!contentBinding) throw new Error("Unable to generate visitor data");
+    async generatePoToken(visitorData?: string, videoId?: string): Promise<YoutubeSessionData> {
+        if (!visitorData) {
+            visitorData = (await this.generateVisitorData()) || undefined;
+            if (!visitorData) throw new Error("Unable to generate visitor data");
         }
 
         const bgConfig: BgConfig = {
             fetch: this.getFetch(),
             globalObj: globalThis as any,
-            identifier: contentBinding,
+            identifier: visitorData,
             requestKey: PoTokenManager.REQUEST_KEY,
         };
 
@@ -229,12 +230,18 @@ export class PoTokenManager {
             tokenMinter = await this.generateTokenMinter(bgConfig, innertube.session.context);
         }
 
-        const poToken = await tokenMinter.minter.mintAsWebsafeString(contentBinding);
-        if (!poToken) throw new Error("Unexpected empty POT");
+        const visitorDataToken = await tokenMinter.minter.mintAsWebsafeString(visitorData);
+        if (!visitorDataToken) throw new Error("Unexpected empty POT");
+
+        let videoIdToken = undefined;
+        if (videoId) {
+            videoIdToken = await tokenMinter.minter.mintAsWebsafeString(videoId);
+        }
 
         return {
-            contentBinding,
-            poToken,
+            visitorDataToken,
+            visitorData,
+            videoIdToken,
             expiresAt: new Date(Date.now() + this.TOKEN_TTL_HOURS * 60 * 60 * 1000),
         };
     }

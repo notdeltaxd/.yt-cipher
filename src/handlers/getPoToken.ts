@@ -2,14 +2,15 @@ import { potManager } from "../pot.ts";
 import type { RequestContext, PoTokenRequest, PoTokenResponse } from "../types.ts";
 
 export async function handleGetPoToken(ctx: RequestContext): Promise<Response> {
-    const { content_binding } = ctx.body as PoTokenRequest;
+    const { visitorData, videoId } = ctx.body as PoTokenRequest;
 
     try {
-        const potData = await potManager.generatePoToken(content_binding);
+        const potData = await potManager.generatePoToken(visitorData, videoId);
 
         const response: PoTokenResponse = {
-            poToken: potData.poToken,
-            visitorData: potData.contentBinding,
+            visitorDataToken: potData.visitorDataToken,
+            visitorData: potData.visitorData,
+            videoIdToken: potData.videoIdToken,
             expiresAt: potData.expiresAt.toISOString(),
         };
 
