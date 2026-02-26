@@ -213,3 +213,47 @@ Resolves a raw stream URL by handling the signature and n-parameter decryption, 
   "resolved_url": "..."
 }
 ```
+
+### `POST /get_pot`
+
+Generates a Proof of Token (PoToken) used by YouTube for playback validation.
+
+**Request Body:**
+
+```json
+{
+  "visitorData": "...",
+  "videoId": "..."
+}
+```
+
+- `visitorData` (string, optional): The `visitorData` value from YouTube.
+- `videoId` (string, optional): The video ID to generate a token for.
+
+**Successful Response:**
+
+```json
+{
+  "visitorDataToken": "...",
+  "visitorData": "...",
+  "videoIdToken": "...",
+  "expiresAt": "2024-05-24T12:00:00.000Z"
+}
+```
+
+- `visitorDataToken` (string): The PoToken for visitor data.
+- `visitorData` (string): The visitor data.
+- `videoIdToken` (string, optional): The PoToken for video ID.
+- `expiresAt` (string): The ISO expiration date/time.
+
+**Example `curl` request:**
+
+```bash
+curl -X POST http://localhost:8001/get_pot \
+-H "Content-Type: application/json" \
+-H "Authorization: your_secret_token" \
+-d '{
+  "visitorData": "...",
+  "videoId": "..."
+}'
+```
