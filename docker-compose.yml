@@ -4,7 +4,7 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    image: ghcr.io/kikkia/yt-cipher:master
+    image: ghcr.io/bongodevs/yt-cipher:master
     container_name: ejs_signature_api
     ports:
       - "8001:8001"
